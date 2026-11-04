@@ -58,9 +58,9 @@ function vlt { podman exec -i -e VAULT_ADDR=http://127.0.0.1:8200 -e VAULT_TOKEN
 vlt operator init -key-shares=1 -key-threshold=1
 ```
 ```bash
-Unseal Key 1: +++++
+Unseal Key 1: i1vOd0hg/BFoW3FyGzTBPG9ZIPzb5G27wBb/1UZixiE=
 
-Initial Root Token: ++++
+Initial Root Token: hvs.7KijK3RQycCGsE3XVckvRaWE
 
 Vault initialized with 1 key shares and a key threshold of 1. Please securely
 distribute the key shares printed above. When the Vault is re-sealed,
@@ -77,10 +77,9 @@ existing unseal keys shares. See "vault operator rekey" for more information.
 ## Entsperren (unseal)
 
 ```bash
-vlt operator unseal <root token>
+vlt operator unseal hvs.7KijK3RQycCGsE3XVckvRaWE
 ```
 ```bash
-unseal +++
 Key             Value
 ---             -----
 Seal Type       shamir
@@ -97,7 +96,7 @@ HA Enabled      false
 ```
 ## Root Token setzen
 ```bash
-$env:VT = "<token>"
+$env:VT = "hvs.7KijK3RQycCGsE3XVckvRaWE"
 ```
 ## KV-Secrets-Engine aktivieren
 ```bash
