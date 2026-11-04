@@ -5,7 +5,7 @@ podman volume create vault-data
 
 #Container anstarten
 
-´´´bash
+```bash
 $cfg = '{"storage":{"file":{"path":"/vault/file"}},"listener":{"tcp":{"address":"0.0.0.0:8200","tls_disable":true}},"ui":true,"api_addr":"http://127.0.0.1:8200"}'
 
 # Nur bei Windows PowerShell 5.1 / PowerShell älter als 7.3: Anführungszeichen escapen
