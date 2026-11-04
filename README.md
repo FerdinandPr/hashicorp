@@ -1,9 +1,9 @@
 #HashiCorp
 
-#Volume anlegen
+## Volume anlegen
 podman volume create vault-data
 
-#Container anstarten
+## Container anstarten
 
 ```bash
 $cfg = '{"storage":{"file":{"path":"/vault/file"}},"listener":{"tcp":{"address":"0.0.0.0:8200","tls_disable":true}},"ui":true,"api_addr":"http://127.0.0.1:8200"}'
@@ -17,11 +17,13 @@ podman run -d --name vault --cap-add=IPC_LOCK -p 8200:8200 `
   docker.io/hashicorp/vault:latest server
 ```
 
-# Logs püfen
+## Logs püfen
 
 ```bash
 podman logs vault
+```
 
+```bash
 ==> Vault server configuration:
 
 Administrative Namespace: 
@@ -46,3 +48,52 @@ Administrative Namespace:
 2026-11-04T15:20:54.406Z [INFO]  core: Initializing version history cache for core
 2026-11-04T15:20:54.406Z [INFO]  events: Starting event system
 ```
+
+## Function in Powershell definieren (nur für Session gültig)
+```bash
+function vlt { podman exec -i -e VAULT_ADDR=http://127.0.0.1:8200 -e VAULT_TOKEN=$env:VT vault vault @args }
+```
+## Initialisieren (einmalig)
+```bash
+vlt operator init -key-shares=1 -key-threshold=1
+```
+```bash
+Unseal Key 1: i1vOd0hg/BFoW3FyGzTBPG9ZIPzb5G27wBb/1UZixiE=
+
+Initial Root Token: hvs.7KijK3RQycCGsE3XVckvRaWE
+
+Vault initialized with 1 key shares and a key threshold of 1. Please securely
+distribute the key shares printed above. When the Vault is re-sealed,
+restarted, or stopped, you must supply at least 1 of these keys to unseal it
+before it can start servicing requests.
+
+Vault does not store the generated root key. Without at least 1 keys to
+reconstruct the root key, Vault will remain permanently sealed!
+
+It is possible to generate new unseal keys, provided you have a quorum of
+existing unseal keys shares. See "vault operator rekey" for more information.
+```
+
+## Entsperren (unseal)
+
+```bash
+vlt operator unseal i1vOd0hg/BFoW3FyGzTBPG9ZIPzb5G27wBb/1UZixiE=
+```
+```bash
+unseal i1vOd0hg/BFoW3FyGzTBPG9ZIPzb5G27wBb/1UZixiE=
+Key             Value
+---             -----
+Seal Type       shamir
+Initialized     true
+Sealed          false
+Total Shares    1
+Threshold       1
+Version         2.2.1
+Build Date      2026-10-22T16:27:49Z
+Storage Type    file
+Cluster Name    vault-cluster-ee156450
+Cluster ID      33ffe4f3-b939-4d67-0b19-04eab4f2d742
+HA Enabled      false
+```
+
+
