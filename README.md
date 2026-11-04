@@ -95,5 +95,36 @@ Cluster Name    vault-cluster-ee156450
 Cluster ID      33ffe4f3-b939-4d67-0b19-04eab4f2d742
 HA Enabled      false
 ```
+## Root Token setzen
+```bash
+$env:VT = "hvs.7KijK3RQycCGsE3XVckvRaWE"
+```
+## KV-Secrets-Engine aktivieren
+```bash
+vlt secrets enable -path=secret kv-v2
+```
+```bash
+vlt secrets enable -path=secret kv-v2
+```
+
+## userpass aktivieren
+```bash
+vlt auth enable userpass
+```
+```bash
+vlt auth enable userpass
+```
+## Policy anlegen
+```bash
+@'
+path "secret/data/*" {
+  capabilities = ["create", "read", "update", "delete", "list"]
+}
+path "secret/metadata/*" {
+  capabilities = ["list", "read", "delete"]
+}
+'@ | vlt policy write meine-policy -
+```
+
 
 
