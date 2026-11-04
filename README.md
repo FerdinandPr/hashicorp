@@ -15,6 +15,7 @@ podman run -d --name vault --cap-add=IPC_LOCK -p 8200:8200 `
   -v vault-data:/vault/file `
   -e VAULT_LOCAL_CONFIG=$cfg `
   docker.io/hashicorp/vault:latest server
+´´´
 
 # Logs püfen
 
@@ -44,3 +45,4 @@ Administrative Namespace:
 2026-11-04T15:20:54.219Z [INFO]  incrementing seal generation: generation=1
 2026-11-04T15:20:54.406Z [INFO]  core: Initializing version history cache for core
 2026-11-04T15:20:54.406Z [INFO]  events: Starting event system
+´´´
