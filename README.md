@@ -156,3 +156,11 @@ identity_policies      []
 policies               ["default" "meine-policy"]
 token_meta_username    max
 ```
+## Nach dem Container-Neustart
+Nach jedem Neustart des Containers oder der Podman Machine ist Vault wieder sealed:
+
+```bash
+podman start vault          # falls gestoppt
+vlt operator unseal <UNSEAL_KEY>
+```
+Daten, Policies und User bleiben im Volume vault-data erhalten. Die Funktion vlt und $env:VT müssen Sie in einer neuen PowerShell-Sitzung erneut setzen (Schritte 4 und 7).
