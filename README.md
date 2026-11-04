@@ -58,9 +58,9 @@ function vlt { podman exec -i -e VAULT_ADDR=http://127.0.0.1:8200 -e VAULT_TOKEN
 vlt operator init -key-shares=1 -key-threshold=1
 ```
 ```bash
-Unseal Key 1: i1vOd0hg/BFoW3FyGzTBPG9ZIPzb5G27wBb/1UZixiE=
+Unseal Key 1: +++++
 
-Initial Root Token: hvs.7KijK3RQycCGsE3XVckvRaWE
+Initial Root Token: ++++
 
 Vault initialized with 1 key shares and a key threshold of 1. Please securely
 distribute the key shares printed above. When the Vault is re-sealed,
@@ -77,10 +77,10 @@ existing unseal keys shares. See "vault operator rekey" for more information.
 ## Entsperren (unseal)
 
 ```bash
-vlt operator unseal i1vOd0hg/BFoW3FyGzTBPG9ZIPzb5G27wBb/1UZixiE=
+vlt operator unseal <root token>
 ```
 ```bash
-unseal i1vOd0hg/BFoW3FyGzTBPG9ZIPzb5G27wBb/1UZixiE=
+unseal +++
 Key             Value
 ---             -----
 Seal Type       shamir
@@ -97,7 +97,7 @@ HA Enabled      false
 ```
 ## Root Token setzen
 ```bash
-$env:VT = "hvs.7KijK3RQycCGsE3XVckvRaWE"
+$env:VT = "<token>"
 ```
 ## KV-Secrets-Engine aktivieren
 ```bash
@@ -117,14 +117,43 @@ vlt auth enable userpass
 ## Policy anlegen
 ```bash
 @'
-path "secret/data/*" {
-  capabilities = ["create", "read", "update", "delete", "list"]
-}
-path "secret/metadata/*" {
-  capabilities = ["list", "read", "delete"]
-}
-'@ | vlt policy write meine-policy -
+>> path "secret/data/*" {
+>>   capabilities = ["create", "read", "update", "delete", "list"]
+>> }
+>> path "secret/metadata/*" {
+>>   capabilities = ["list", "read", "delete"]
+>> }
+>> '@ | podman exec -i -e VAULT_ADDR=http://127.0.0.1:8200 -e VAULT_TOKEN=$env:VT vault vault policy write meine-policy -
 ```
 
+## User anlegen ( USername = max)
+```bash
+vlt write auth/userpass/users/max password="EinSicheresPasswort" policies="meine-policy"
+```
+```bash
+Success! Data written to: auth/userpass/users/max
+```
+##Login testen
+```bash
+vlt login -method=userpass username=max password="EinSicheresPasswort"
+```
+```bash
+WARNING! The VAULT_TOKEN environment variable is set! The value of this
+variable will take precedence; if this is unwanted please unset VAULT_TOKEN or
+update its value accordingly.
 
+Success! You are now authenticated. The token information displayed below
+is already stored in the token helper. You do NOT need to run "vault login"
+again. Future Vault requests will automatically use this token.
 
+Key                    Value
+---                    -----
+token                  hvs.CAESIJPtlQhFoIofopuXNQML84u7EosmbK_XVpqcTL6sJFelGh4KHGh2cy40dThrZzVKUU9qQ2pJb3BLYkoxbmVWbmM
+token_accessor         glnOTqb4hfwSAm9txOl9EauN
+token_duration         768h
+token_renewable        true
+token_policies         ["default" "meine-policy"]
+identity_policies      []
+policies               ["default" "meine-policy"]
+token_meta_username    max
+```
